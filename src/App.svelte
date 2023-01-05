@@ -13,6 +13,7 @@
     <p>{user.displayName}</p>
     <p>{user.uid}</p>
     <img referrerpolicy="no-referrer" width="100" alt="user avatar">
+    <button on:click={() => auth.signOut()}>Log out</button>
   {:else}
     <button on:click={login}> Sign in with google </button>
   {/if}
