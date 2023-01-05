@@ -1,37 +1,30 @@
 <script lang="ts">
-    import { onAuthStateChanged, signInWithPopup } from "firebase/auth";
-  import { auth, googleProvider } from "./firebase";
+  import Topbar from "./ui/topbar.svelte";
+  import HomePage from "./ui/homePage.svelte";
+  import LoginPage from "./ui/loginPage.svelte";
+  import EditPage from "./ui/editPage.svelte";
+  import AboutPage from "./ui/aboutPage.svelte";
   let user;
-  function login() {
-    signInWithPopup(auth, googleProvider).then((res) => user = res.user);
-    console.log(user);
-  }
+  let selectedTab = "";
 </script>
 
+<Topbar
+  on:go-home={() => (selectedTab = "Home")}
+  on:go-login={() => (selectedTab = "Login")}
+  on:go-about={() => (selectedTab = "About")}
+  on:go-edit={() => (selectedTab = "Edit")}
+/>
 <main>
-  {#if user}
-    <p>{user.displayName}</p>
-    <p>{user.uid}</p>
-    <img referrerpolicy="no-referrer" width="100" alt="user avatar">
-    <button on:click={() => auth.signOut()}>Log out</button>
-  {:else}
-    <button on:click={login}> Sign in with google </button>
+  {#if selectedTab === "Home"}
+    <HomePage />
+  {:else if selectedTab === "Login"}
+    <LoginPage bind:user />
+  {:else if selectedTab === "Edit"}
+    <EditPage />
+  {:else if selectedTab === "About"}
+    <AboutPage />
   {/if}
 </main>
 
 <style>
-  .logo {
-    height: 6em;
-    padding: 1.5em;
-    will-change: filter;
-  }
-  .logo:hover {
-    filter: drop-shadow(0 0 2em #646cffaa);
-  }
-  .logo.svelte:hover {
-    filter: drop-shadow(0 0 2em #ff3e00aa);
-  }
-  .read-the-docs {
-    color: #888;
-  }
 </style>
