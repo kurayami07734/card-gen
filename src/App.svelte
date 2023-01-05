@@ -5,7 +5,7 @@
   import EditPage from "./ui/editPage.svelte";
   import AboutPage from "./ui/aboutPage.svelte";
   let user;
-  let selectedTab = "";
+  let selectedTab = "Home";
 </script>
 
 <Topbar
