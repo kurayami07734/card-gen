@@ -1,30 +1,19 @@
 <script lang="ts">
-  import svelteLogo from './assets/svelte.svg'
-  import Counter from './lib/Counter.svelte'
+    import { onAuthStateChanged, signInWithPopup } from "firebase/auth";
+  import { auth, googleProvider } from "./firebase";
+  let user;
+  function login() {
+    signInWithPopup(auth, googleProvider).then((res) => user = res.user);
+    console.log(user);
+  }
 </script>
 
 <main>
-  <div>
-    <a href="https://vitejs.dev" target="_blank" rel="noreferrer"> 
-      <img src="/vite.svg" class="logo" alt="Vite Logo" />
-    </a>
-    <a href="https://svelte.dev" target="_blank" rel="noreferrer"> 
-      <img src={svelteLogo} class="logo svelte" alt="Svelte Logo" />
-    </a>
-  </div>
-  <h1>Vite + Svelte</h1>
-
-  <div class="card">
-    <Counter />
-  </div>
-
-  <p>
-    Check out <a href="https://github.com/sveltejs/kit#readme" target="_blank" rel="noreferrer">SvelteKit</a>, the official Svelte app framework powered by Vite!
-  </p>
-
-  <p class="read-the-docs">
-    Click on the Vite and Svelte logos to learn more
-  </p>
+  {#if user}
+    <p>{user.displayName}</p>
+  {:else}
+    <button on:click={login}> Sign in with google </button>
+  {/if}
 </main>
 
 <style>
