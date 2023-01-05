@@ -11,6 +11,8 @@
 <main>
   {#if user}
     <p>{user.displayName}</p>
+    <p>{user.uid}</p>
+    <img src={user.photoURL} width="100" alt="user avatar">
   {:else}
     <button on:click={login}> Sign in with google </button>
   {/if}
