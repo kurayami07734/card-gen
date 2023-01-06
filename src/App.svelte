@@ -1,9 +1,9 @@
 <script lang="ts">
-  import Topbar from "./ui/topbar.svelte";
-  import HomePage from "./ui/homePage.svelte";
-  import LoginPage from "./ui/loginPage.svelte";
-  import EditPage from "./ui/editPage.svelte";
-  import AboutPage from "./ui/aboutPage.svelte";
+  import Topbar from "./pages/topbar.svelte";
+  import HomePage from "./pages/homePage.svelte";
+  import LoginPage from "./pages/loginPage.svelte";
+  import EditPage from "./pages/editPage.svelte";
+  import AboutPage from "./pages/aboutPage.svelte";
   let user;
   let selectedTab = "Home";
 </script>

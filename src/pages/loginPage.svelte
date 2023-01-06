@@ -9,5 +9,7 @@
 </script>
 
 <section>
-    <button on:click={login}>Sign in with google</button>
+    <div class="login-box">
+        <button on:click={login}>Sign in with google</button>
+    </div>
 </section>

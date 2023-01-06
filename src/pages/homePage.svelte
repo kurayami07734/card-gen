@@ -1,5 +1,5 @@
 <script>
-    let value = "Enter a business name";
+    let value = "";
 </script>
 
 <div class="background">
@@ -9,7 +9,7 @@
             <h3>Make a business card in minutes</h3>
         </div>
         <div class="cta">
-            <input type="search" bind:value />
+            <input type="search" bind:value placeholder="Enter a business name" />
             <button>Go</button>
         </div>
     </section>
@@ -27,6 +27,9 @@
     h1 {
         font-size: 40px;
         line-height: 1.24rem;
+    }
+    h3 {
+        font-weight: 200;
     }
     .background {
         background-image: url("../assets/dark-card-bg.jpg");
@@ -52,8 +55,8 @@
             background-color: white;
             border-top-left-radius: 8px;
             border-bottom-left-radius: 8px;
-            font-size: 1.3rem;
-            width: auto;
+            font-size: 1.4rem;
+            width: 400px;
             color: black;
         }
         .cta > button {
