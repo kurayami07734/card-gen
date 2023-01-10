@@ -1,15 +1,19 @@
 <script lang="ts">
-    import { signInWithPopup } from "firebase/auth";
-    import { auth, googleProvider, facebookProvider } from "../firebase";
-    function loginGoogle() {
+    
+    async function loginGoogle(){
+        let {signInWithPopup} = await import("firebase/auth");
+        let {auth, googleProvider} = await import("../firebase");
         signInWithPopup(auth, googleProvider).then((res) => (user = res.user));
         console.log(user);
     }
-    function loginFacebook() {
+    async function loginFacebook() {
+        let {signInWithPopup} = await import("firebase/auth");
+        let {auth, facebookProvider} = await import("../firebase");
         signInWithPopup(auth, facebookProvider).then((res) => (user = res.user));
         console.log(user);
     }
-    function logout() {
+    async function logout() {
+        let {auth} = await import("../firebase");
         auth.signOut();
         user = null;
     }
