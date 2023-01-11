@@ -19,6 +19,7 @@
     "vite": "^4.0.0"
   },
   "dependencies": {
+    "dotenv": "^16.0.3",
     "fabric": "^5.3.0",
     "firebase": "^9.15.0"
   }
