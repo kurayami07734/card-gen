@@ -1,5 +1,7 @@
 <script>
+    import { createEventDispatcher } from "svelte";
     let value = "";
+    const dispatch = createEventDispatcher();
 </script>
 
 <div class="background" />
@@ -9,7 +11,7 @@
     </div>
     <div class="cta">
         <input type="search" bind:value placeholder="Enter a business name" />
-        <button>Go</button>
+        <button on:click={() => dispatch("go-search", value)}>Go</button>
     </div>
 </section>
 
@@ -34,7 +36,7 @@
         z-index: -1;
         background-image: url("../assets/dark-card-bg.jpg");
         background-size: cover;
-        filter: grayscale(1) brightness(0.65);
+        filter: grayscale(1) brightness(0.55);
     }
     .cta {
         display: flex;

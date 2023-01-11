@@ -34,13 +34,11 @@
 
 <section>
     <div class="toolbar">
-        <button on:click={addRect}>Add Rect</button>
-        <button on:click={addText}>Add Text</button>
-        <button on:click={save}>Save to json</button>
-        <div id="color-picker">
-            <input type="color" name="bg-color" bind:value={canvasColor} on:change={changeCanvasColor} />
-            <label for="background">Canvas background color</label>
+        <div class="text">
+            Text
         </div>
+        <div class="line">Line</div>
+        <div class="Rect">Rectangle</div>
     </div>
     <div class="canvas-container">
         <canvas id="canvas" width="1050" height="600" />
@@ -62,6 +60,10 @@
     }
     .toolbar {
         position: absolute;
+        display: flex;
+        flex-direction: row;
+        width: 80vw;
+        justify-content: space-around;
         top: 10vh;
         left: 10vh;
     }
