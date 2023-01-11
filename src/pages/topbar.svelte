@@ -43,10 +43,6 @@
     }
     .point {
         cursor: pointer;
-        transition-duration: 150ms;
-    }
-    .point:hover {
-        color: cornflowerblue;
     }
     .selected {
         text-decoration: underline #0066ff 0.3rem;
