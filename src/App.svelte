@@ -15,7 +15,6 @@
   bind:selectedTab
   on:go-home={() => (selectedTab = "Home")}
   on:go-login={() => (selectedTab = "Login")}
-  on:go-about={() => (selectedTab = "About")}
   on:go-search={() => {
     selectedTab = "Search";
     event = { detail: "" };
@@ -30,7 +29,7 @@
       }}
     />
   {:else if selectedTab === "Login"}
-    <LoginPage bind:user />
+    <LoginPage bind:user on:go-about={() => (selectedTab = "About")} />
   {:else if selectedTab === "Search"}
     <SearchPage bind:value={event.detail} />
   {:else if selectedTab === "About"}
