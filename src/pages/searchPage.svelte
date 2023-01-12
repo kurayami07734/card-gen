@@ -1,10 +1,12 @@
 <script>
+    import { createEventDispatcher } from "svelte";
     export let value;
+    let dispatch = createEventDispatcher();
 </script>
 
 <div class="cta">
     <input type="search" bind:value placeholder="Enter a business name" />
-    <button>Go</button>
+    <button on:click={() => dispatch("go-edit")}>Go</button>
 </div>
 
 <style>

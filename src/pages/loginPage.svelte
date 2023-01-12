@@ -27,27 +27,22 @@
         <button id="logout" on:click={logout}>Logout</button>
     {:else}
         <div class="login-box">
-            <h2>Login</h2>
-            <!-- <img
-                id="login-vector-art"
-                src="/src/assets/login.jpg"
-                alt="Login vector art"
-                height="350"
-            /> -->
+            <h1>Login</h1>
+            
             <div class="login-btns">
                 <button id="google-btn" on:click={loginGoogle}>
                     <img
                         src="/src/assets/icons8-google.svg"
                         alt="Google Logo"
                     />
-                    Login with Google
+                    Continue with Google
                 </button>
                 <button id="facebook-btn" on:click={loginFacebook}>
                     <img
                         src="/src/assets/icons8-facebook.svg"
                         alt="Facebook Logo"
                     />
-                    Login with facebook
+                    Continue with Facebook
                 </button>
             </div>
         </div>
@@ -62,7 +57,9 @@
         align-items: center;
         height: 90vh;
     }
-
+    h1 {
+        font-size: 2.3rem;
+    }
     #facebook-btn {
         background-color: #1877f2;
         display: flex;

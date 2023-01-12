@@ -2,7 +2,7 @@
     import { onMount } from "svelte";
     import { fabric } from "fabric";
     let canvas;
-    let canvasColor = "#032312";
+    let canvasColor = "white";
     onMount(() => {
         canvas = new fabric.Canvas("canvas", {
             backgroundColor: canvasColor,
@@ -23,25 +23,29 @@
         console.log(canvas.toSVG());
     }
     function addText() {
-        let text = new fabric.Text("Hello There", { left: 100, right: 100 });
-        canvas.add(text);
+        let textBox = new fabric.Textbox("Hello There", {
+            editable: true,
+            left: 100,
+            right: 100,
+        });
+        canvas.add(textBox);
     }
     function changeCanvasColor() {
         canvas.setBackgroundColor(canvasColor, canvas.renderAll.bind(canvas));
     }
-    $: console.log(canvasColor);
 </script>
 
 <section>
     <div class="toolbar">
-        <div class="text">
-            Text
-        </div>
+        <div class="text" on:click={addText} on:keypress={addText}>Text</div>
         <div class="line">Line</div>
         <div class="Rect">Rectangle</div>
     </div>
     <div class="canvas-container">
         <canvas id="canvas" width="1050" height="600" />
+    </div>
+    <div class="props-pane">
+        <p>Propeties</p>
     </div>
 </section>
 
@@ -52,11 +56,10 @@
         align-items: center;
         height: 92vh;
     }
-
     #canvas {
         background-color: white;
-        border-radius: 3px;
-        margin: 1rem 2rem;
+        border-radius: 4px;
+        /* margin: 1rem 2rem; */
     }
     .toolbar {
         position: absolute;
@@ -66,5 +69,8 @@
         justify-content: space-around;
         top: 10vh;
         left: 10vh;
+    }
+    .toolbar > div {
+        cursor: pointer;
     }
 </style>

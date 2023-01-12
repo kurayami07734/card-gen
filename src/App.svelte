@@ -3,7 +3,6 @@
   import HomePage from "./pages/homePage.svelte";
   import LoginPage from "./pages/loginPage.svelte";
   import EditPage from "./pages/editPage.svelte";
-  import AboutPage from "./pages/aboutPage.svelte";
   import SearchPage from "./pages/searchPage.svelte";
   let user;
   let selectedTab = "Home";
@@ -31,7 +30,12 @@
   {:else if selectedTab === "Login"}
     <LoginPage bind:user />
   {:else if selectedTab === "Search"}
-    <SearchPage bind:value={event.detail} />
+    <SearchPage
+      bind:value={event.detail}
+      on:go-edit={() => (selectedTab = "Edit")}
+    />
+  {:else if selectedTab === "Edit"}
+    <EditPage />
   {/if}
 </main>
 
