@@ -29,11 +29,9 @@
       }}
     />
   {:else if selectedTab === "Login"}
-    <LoginPage bind:user on:go-about={() => (selectedTab = "About")} />
+    <LoginPage bind:user />
   {:else if selectedTab === "Search"}
     <SearchPage bind:value={event.detail} />
-  {:else if selectedTab === "About"}
-    <AboutPage />
   {/if}
 </main>
 

@@ -1,50 +1,57 @@
 <script lang="ts">
-    import { createEventDispatcher } from "svelte";
-
     async function loginGoogle() {
         let { signInWithPopup } = await import("firebase/auth");
         let { auth, googleProvider } = await import("../firebase");
-        signInWithPopup(auth, googleProvider).then((res) => (user = res.user));
-        console.log(user);
+        signInWithPopup(auth, googleProvider)
+            .then((res) => (user = res.user))
+            .catch((err) => alert(err.detail));
     }
     async function loginFacebook() {
         let { signInWithPopup } = await import("firebase/auth");
         let { auth, facebookProvider } = await import("../firebase");
-        signInWithPopup(auth, facebookProvider).then(
-            (res) => (user = res.user)
-        );
-        console.log(user);
+        signInWithPopup(auth, facebookProvider)
+            .then((res) => (user = res.user))
+            .catch((err) => alert(err.detail));
     }
     async function logout() {
         let { auth } = await import("../firebase");
         auth.signOut();
         user = null;
     }
-    let dispatch = createEventDispatcher();
     export let user;
 </script>
 
 <section>
     {#if user}
         <p>{user.displayName}</p>
-        <button on:click={logout}>Logout</button>
+        <button id="logout" on:click={logout}>Logout</button>
     {:else}
         <div class="login-box">
             <h2>Login</h2>
+            <!-- <img
+                id="login-vector-art"
+                src="/src/assets/login.jpg"
+                alt="Login vector art"
+                height="350"
+            /> -->
             <div class="login-btns">
-                <button on:click={loginGoogle}>Sign in with google</button>
-                <button on:click={loginFacebook}>Sign in with facebook</button>
+                <button id="google-btn" on:click={loginGoogle}>
+                    <img
+                        src="/src/assets/icons8-google.svg"
+                        alt="Google Logo"
+                    />
+                    Login with Google
+                </button>
+                <button id="facebook-btn" on:click={loginFacebook}>
+                    <img
+                        src="/src/assets/icons8-facebook.svg"
+                        alt="Facebook Logo"
+                    />
+                    Login with facebook
+                </button>
             </div>
         </div>
     {/if}
-    <div class="about-us">
-        <h3
-            on:click={() => dispatch("go-about")}
-            on:keypress={() => dispatch("go-about")}
-        >
-            About Us
-        </h3>
-    </div>
 </section>
 
 <style>
@@ -55,22 +62,37 @@
         align-items: center;
         height: 90vh;
     }
+
+    #facebook-btn {
+        background-color: #1877f2;
+        display: flex;
+        align-items: center;
+        justify-content: space-around;
+    }
+    #google-btn {
+        display: flex;
+        align-items: center;
+        justify-content: space-around;
+    }
+    #logout {
+        background-color: red;
+        font-weight: 300;
+        font-size: 1.2rem;
+    }
+
     .login-box {
         display: flex;
         flex-direction: column;
         max-width: 70vw;
-        width: 60vw;
         text-align: center;
-        /* background-color: #02000c; */
-        height: 50vh;
         justify-content: space-around;
         align-items: center;
     }
     .login-btns {
         display: flex;
-        height: 25vh;
         flex-direction: column;
-        max-width: 40vw;
+        font-size: 1.3rem;
         justify-content: space-around;
+        gap: 1rem;
     }
 </style>
