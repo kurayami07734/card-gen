@@ -32,14 +32,14 @@
             <div class="login-btns">
                 <button id="google-btn" on:click={loginGoogle}>
                     <img
-                        src="/src/assets/icons8-google.svg"
+                        src="./icons8-google.svg"
                         alt="Google Logo"
                     />
                     Continue with Google
                 </button>
                 <button id="facebook-btn" on:click={loginFacebook}>
                     <img
-                        src="/src/assets/icons8-facebook.svg"
+                        src="./icons8-facebook.svg"
                         alt="Facebook Logo"
                     />
                     Continue with Facebook

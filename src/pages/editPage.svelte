@@ -3,11 +3,13 @@
     import { fabric } from "fabric";
     let canvas;
     let canvasColor = "white";
+    let activeObject;
     onMount(() => {
         canvas = new fabric.Canvas("canvas", {
             backgroundColor: canvasColor,
             snapAngle: 0,
         });
+        activeObject = canvas;
     });
     function addRect() {
         let rect = new fabric.Rect({
