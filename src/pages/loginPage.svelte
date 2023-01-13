@@ -22,31 +22,24 @@
 </script>
 
 <section>
-    {#if user}
-        <p>{user.displayName}</p>
-        <button id="logout" on:click={logout}>Logout</button>
-    {:else}
-        <div class="login-box">
+    <div class="login-box">
+        {#if user}
+            <p>{user.displayName}</p>
+            <button id="logout" on:click={logout}>Logout</button>
+        {:else}
             <h1>Login</h1>
-            
             <div class="login-btns">
                 <button id="google-btn" on:click={loginGoogle}>
-                    <img
-                        src="./icons8-google.svg"
-                        alt="Google Logo"
-                    />
+                    <img src="./icons8-google.svg" alt="Google Logo" />
                     Continue with Google
                 </button>
                 <button id="facebook-btn" on:click={loginFacebook}>
-                    <img
-                        src="./icons8-facebook.svg"
-                        alt="Facebook Logo"
-                    />
+                    <img src="./icons8-facebook.svg" alt="Facebook Logo" />
                     Continue with Facebook
                 </button>
             </div>
-        </div>
-    {/if}
+        {/if}
+    </div>
 </section>
 
 <style>
@@ -70,6 +63,7 @@
         display: flex;
         align-items: center;
         justify-content: space-around;
+        background-color: #303030;
     }
     #logout {
         background-color: red;
@@ -83,6 +77,10 @@
         max-width: 70vw;
         text-align: center;
         justify-content: space-around;
+        background-color: #151515;
+        padding: 2rem;
+        border-radius: 5px;
+        box-shadow: 3px 8px rgba(0, 0, 0, 0.87);
         align-items: center;
     }
     .login-btns {

@@ -1,9 +1,9 @@
 <script lang="ts">
-    import { onMount } from "svelte";
+    import { onMount, tick } from "svelte";
     import { fabric } from "fabric";
     let canvas;
-    let canvasColor = "white";
     let activeObject;
+    let canvasColor = "white";
     onMount(() => {
         canvas = new fabric.Canvas("canvas", {
             backgroundColor: canvasColor,
@@ -29,11 +29,20 @@
             editable: true,
             left: 100,
             right: 100,
+            fontFamily: "Arial"
         });
         canvas.add(textBox);
     }
     function changeCanvasColor() {
         canvas.setBackgroundColor(canvasColor, canvas.renderAll.bind(canvas));
+    }
+    function updateSelection() {
+        activeObject = canvas.getActiveObject();
+        if (activeObject === null) activeObject = canvas;
+        canvas.centerObject(activeObject);
+        activeObject.set("fill", "rgba(255, 0, 0, 0.50)")
+        // activeObject.set("fontFamily", "monospace");
+        canvas.renderAll();
     }
 </script>
 
@@ -41,13 +50,20 @@
     <div class="toolbar">
         <div class="text" on:click={addText} on:keypress={addText}>Text</div>
         <div class="line">Line</div>
-        <div class="Rect">Rectangle</div>
+        <div class="Rect" on:click={addRect} on:keypress={addRect}>
+            Rectangle
+        </div>
+        <div class="Circle">Circle</div>
     </div>
-    <div class="canvas-container">
+    <div
+        class="canvas-container"
+        on:click={updateSelection}
+        on:keypress={updateSelection}
+    >
         <canvas id="canvas" width="1050" height="600" />
     </div>
     <div class="props-pane">
-        <p>Propeties</p>
+        
     </div>
 </section>
 
@@ -60,8 +76,7 @@
     }
     #canvas {
         background-color: white;
-        border-radius: 4px;
-        /* margin: 1rem 2rem; */
+        border-radius: 5px;
     }
     .toolbar {
         position: absolute;
