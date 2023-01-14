@@ -1,13 +1,19 @@
 <script lang="ts">
-    import { onMount, tick } from "svelte";
+    import { onMount } from "svelte";
     import { fabric } from "fabric";
-    let canvas;
-    let activeObject;
-    let canvasColor = "white";
+    import { HsvPicker } from "svelte-color-picker";
+    let canvas, activeObject;
+    let fontFamilies = ["Arial", "serif", "cursive", "monospace"];
+    let object = {
+        color: "black",
+        fontSize: 30,
+        fontFamily: "Arial",
+    };
     onMount(() => {
         canvas = new fabric.Canvas("canvas", {
-            backgroundColor: canvasColor,
+            backgroundColor: "white",
             snapAngle: 0,
+            fireRightClick: true,
         });
         activeObject = canvas;
     });
@@ -29,19 +35,21 @@
             editable: true,
             left: 100,
             right: 100,
-            fontFamily: "Arial"
         });
         canvas.add(textBox);
     }
     function changeCanvasColor() {
-        canvas.setBackgroundColor(canvasColor, canvas.renderAll.bind(canvas));
+        canvas.setBackgroundColor(object.color, canvas.renderAll.bind(canvas));
     }
     function updateSelection() {
         activeObject = canvas.getActiveObject();
         if (activeObject === null) activeObject = canvas;
-        canvas.centerObject(activeObject);
-        activeObject.set("fill", "rgba(255, 0, 0, 0.50)")
-        // activeObject.set("fontFamily", "monospace");
+    }
+    function updateObject() {
+        activeObject.set("fontSize", object.fontSize);
+        activeObject.set("fontFamily", object.fontFamily);
+        console.log(activeObject);
+        activeObject.set("fill", object.color);
         canvas.renderAll();
     }
 </script>
@@ -63,14 +71,40 @@
         <canvas id="canvas" width="1050" height="600" />
     </div>
     <div class="props-pane">
-        
+        <button on:click={() => canvas.remove(canvas.getActiveObject())}
+            >Delete object
+        </button>
+        <input
+            type="number"
+            bind:value={object.fontSize}
+            on:change={updateObject}
+        />
+        <select
+            name="fontFamily"
+            id="font-family"
+            bind:value={object.fontFamily}
+            on:change={updateObject}
+        >
+            {#each fontFamilies as font}
+                <option value={font}>{font}</option>
+            {/each}
+        </select>
+        <HsvPicker
+            on:colorChange={(e) => {
+                object.color = `rgba(${e.detail.r},${e.detail.g},${e.detail.b},${e.detail.a})`;
+                if (activeObject !== undefined) updateObject();
+            }}
+        />
+        <button on:click={changeCanvasColor}
+            >Set this as canvas background
+        </button>
     </div>
 </section>
 
 <style>
     section {
         display: flex;
-        justify-content: center;
+        justify-content: space-around;
         align-items: center;
         height: 92vh;
     }
@@ -89,5 +123,13 @@
     }
     .toolbar > div {
         cursor: pointer;
+    }
+    .props-pane {
+        display: flex;
+        height: 90vh;
+        justify-content: center;
+        gap: 2rem;
+        flex-direction: column;
+        align-items: center;
     }
 </style>
