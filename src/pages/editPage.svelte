@@ -6,6 +6,8 @@
     let fontFamilies = ["Arial", "serif", "cursive", "monospace"];
     let object = {
         color: "black",
+        strokeWidth: 5,
+        stroke: "green",
         fontSize: 30,
         fontFamily: "Arial",
     };
@@ -27,14 +29,21 @@
         });
         canvas.add(rect);
     }
-    function save() {
-        console.log(canvas.toSVG());
+    function addCircle() {
+        let circle = new fabric.Circle({
+            radius: 50,
+            fill: "green",
+            left: 100,
+            right: 100,
+        });
+        canvas.add(circle);
     }
+
     function addText() {
         let textBox = new fabric.Textbox("Hello There", {
             editable: true,
             left: 100,
-            right: 100,
+            top: 100,
         });
         canvas.add(textBox);
     }
@@ -43,13 +52,26 @@
     }
     function updateSelection() {
         activeObject = canvas.getActiveObject();
-        if (activeObject === null) activeObject = canvas;
+        if (activeObject === undefined || activeObject === null)
+            activeObject = canvas;
+        console.log(activeObject);
     }
     function updateObject() {
         activeObject.set("fontSize", object.fontSize);
         activeObject.set("fontFamily", object.fontFamily);
+        activeObject.set("strokeWidth", object.strokeWidth);
+        activeObject.set("stroke", object.stroke);
         console.log(activeObject);
         activeObject.set("fill", object.color);
+        canvas.renderAll();
+    }
+    let href;
+    function save() {
+        href = canvas.toDataURL({ format: "png" });
+        this.download = "canvas.png";
+    }
+    function changeBorderColor() {
+        activeObject.set("stroke", object.color);
         canvas.renderAll();
     }
 </script>
@@ -61,7 +83,10 @@
         <div class="Rect" on:click={addRect} on:keypress={addRect}>
             Rectangle
         </div>
-        <div class="Circle">Circle</div>
+        <div class="Circle" on:click={addCircle} on:keypress={addCircle}>
+            Circle
+        </div>
+        <a {href} download="file" on:click={save}>download as png</a>
     </div>
     <div
         class="canvas-container"
@@ -74,29 +99,48 @@
         <button on:click={() => canvas.remove(canvas.getActiveObject())}
             >Delete object
         </button>
-        <input
-            type="number"
-            bind:value={object.fontSize}
-            on:change={updateObject}
-        />
-        <select
-            name="fontFamily"
-            id="font-family"
-            bind:value={object.fontFamily}
-            on:change={updateObject}
-        >
-            {#each fontFamilies as font}
-                <option value={font}>{font}</option>
-            {/each}
-        </select>
+        {#if activeObject && activeObject.type === "textbox"}
+            <div class="font-size-picker">
+                <label for="number">Font Size</label>
+                <input
+                    type="number"
+                    bind:value={object.fontSize}
+                    on:change={updateObject}
+                />
+            </div>
+            <div class="font-family-picker">
+                <label for="select">Font Face</label>
+                <select
+                    name="fontFamily"
+                    id="font-family"
+                    bind:value={object.fontFamily}
+                    on:change={updateObject}
+                >
+                    {#each fontFamilies as font}
+                        <option value={font}>{font}</option>
+                    {/each}
+                </select>
+            </div>
+        {/if}
+        <div class="border-width-picker">
+            <label for="number">Border width</label>
+            <input
+                type="number"
+                bind:value={object.strokeWidth}
+                on:change={updateObject}
+            />
+        </div>
         <HsvPicker
             on:colorChange={(e) => {
                 object.color = `rgba(${e.detail.r},${e.detail.g},${e.detail.b},${e.detail.a})`;
-                if (activeObject !== undefined) updateObject();
+                if (activeObject) updateObject();
             }}
         />
+        <button on:click={changeBorderColor}
+            >Set this color as border color
+        </button>
         <button on:click={changeCanvasColor}
-            >Set this as canvas background
+            >Set this color as canvas background
         </button>
     </div>
 </section>
@@ -117,7 +161,7 @@
         display: flex;
         flex-direction: row;
         width: 80vw;
-        justify-content: space-around;
+        gap: 2rem;
         top: 10vh;
         left: 10vh;
     }
@@ -131,5 +175,13 @@
         gap: 2rem;
         flex-direction: column;
         align-items: center;
+        font-size: 1.1rem;
+    }
+    .props-pane input {
+        width: 4rem;
+        font-size: 1.1rem;
+    }
+    .props-pane select {
+        font-size: 1.2rem;
     }
 </style>
