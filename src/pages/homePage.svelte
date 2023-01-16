@@ -1,6 +1,5 @@
 <script>
     import { createEventDispatcher } from "svelte";
-    let value = "";
     const dispatch = createEventDispatcher();
 </script>
 
@@ -8,10 +7,10 @@
 <section>
     <div class="hero">
         <h1>Make a business card in minutes</h1>
+        <h2>No Signup required!</h2>
     </div>
     <div class="cta">
-        <input type="search" bind:value placeholder="Try it out!" />
-        <button on:click={() => dispatch("go-search", value)}>Go</button>
+        <button on:click={() => dispatch("go-search")}>Go</button>
     </div>
 </section>
 
@@ -27,6 +26,12 @@
     h1 {
         font-size: 60px;
         text-align: center;
+
+    }
+    h2 {
+        font-size: 46px;
+        font-weight: 300;
+        text-align: center;
     }
     .background {
         position: fixed;
@@ -37,7 +42,7 @@
         z-index: -1;
         background-image: url("../assets/bg.webp");
         background-size: cover;
-        filter: grayscale(1) brightness(0.40);
+        filter: grayscale(1) brightness(0.4);
     }
     .cta {
         display: flex;
@@ -50,14 +55,5 @@
         font-size: 1.5rem;
         font-weight: 600;
         max-width: 60vw;
-    }
-    .cta > input {
-        padding: 0.8rem;
-        /* padding-left: 1rem; */
-        background-color: white;
-        border-radius: 8px;
-        font-size: 1.5rem;
-        max-width: 60vw;
-        color: black;
     }
 </style>
