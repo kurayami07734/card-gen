@@ -11,7 +11,8 @@
     } from "@fortawesome/free-solid-svg-icons";
     let canvas,
         activeObject,
-        showUploadButton = false;
+        showUploadButton = false,
+        showDownloadLinks = false;
     let fontFamilies = ["Arial", "serif", "cursive", "monospace"];
     let href;
     let object = {
@@ -77,9 +78,20 @@
         activeObject.set("fill", object.color);
         canvas.renderAll();
     }
-    function save() {
+    function saveAsPNG() {
         href = canvas.toDataURL({ format: "png" });
         this.download = "canvas.png";
+    }
+    function saveAsJPG() {
+        href = canvas.toDataURL({ format: "jpeg" });
+        this.download = "canvas.jpg";
+    }
+    function saveAsSVG() {
+        let svgData = canvas.toSVG();
+        let blob = new Blob([svgData], { type: "image/svg+xml;charset=utf-8" });
+        href = URL.createObjectURL(blob);
+        console.log(href);
+        this.download = "canvas.svg";
     }
     function changeBorderColor() {
         activeObject.set("stroke", object.color);
@@ -102,6 +114,14 @@
         };
         reader.readAsDataURL(e.target.files[0]);
         showUploadButton = false;
+    }
+    function deleteObject() {
+        if (activeObject == canvas) alert("No object is selected!");
+        else canvas.remove(activeObject);
+    }
+    function handleColorChange(e) {
+        object.color = `rgba(${e.detail.r},${e.detail.g},${e.detail.b},${e.detail.a})`;
+        if (activeObject) updateObject();
     }
 </script>
 
@@ -141,9 +161,24 @@
                 <label for="image"> Upload Image </label>
             {/if}
         </div>
-        <div>
-            <Icon icon={faDownload} class="icon" />
-            <a {href} download="file" on:click={save}>download as png</a>
+        <div
+            on:click={() => (showDownloadLinks = !showDownloadLinks)}
+            on:keypress={() => (showDownloadLinks = !showDownloadLinks)}
+        >
+            {#if showDownloadLinks}
+                <a {href} download="file" on:click={saveAsPNG}>
+                    download as png
+                </a>
+                <a {href} download="file" on:click={saveAsJPG}>
+                    download as jpg
+                </a>
+                <a {href} download="file" on:click={saveAsSVG}>
+                    download as svg
+                </a>
+            {:else}
+                <Icon icon={faDownload} class="icon" />
+                Download
+            {/if}
         </div>
     </div>
     <div
@@ -154,9 +189,7 @@
         <canvas id="canvas" width="1050" height="600" />
     </div>
     <div class="props-pane">
-        <button class="delete" on:click={() => canvas.remove(canvas.getActiveObject())}
-            >Delete object
-        </button>
+        <button class="delete" on:click={deleteObject}>Delete object </button>
         {#if activeObject && activeObject.type === "textbox"}
             <div class="font-size-picker">
                 <label for="number">Font Size</label>
@@ -188,12 +221,7 @@
                 on:change={updateObject}
             />
         </div>
-        <HsvPicker
-            on:colorChange={(e) => {
-                object.color = `rgba(${e.detail.r},${e.detail.g},${e.detail.b},${e.detail.a})`;
-                if (activeObject) updateObject();
-            }}
-        />
+        <HsvPicker on:colorChange={handleColorChange} />
         <button on:click={changeBorderColor}
             >Set this color as border color
         </button>
