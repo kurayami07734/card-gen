@@ -4,7 +4,7 @@
   import LoginPage from "./pages/loginPage.svelte";
   import EditPage from "./pages/editPage.svelte";
   import SearchPage from "./pages/searchPage.svelte";
-  let user;
+  let user, json;
   let selectedTab = "Home";
 </script>
 
@@ -22,7 +22,7 @@
   {:else if selectedTab === "Search"}
     <SearchPage on:go-edit={() => (selectedTab = "Edit")} />
   {:else if selectedTab === "Edit"}
-    <EditPage />
+    <EditPage bind:json />
   {/if}
 </main>
 

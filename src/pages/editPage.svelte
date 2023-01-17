@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { onMount } from "svelte";
+    import { onMount, onDestroy } from "svelte";
     import { fabric } from "fabric";
     import { HsvPicker } from "svelte-color-picker";
     import Icon from "fa-svelte";
@@ -15,6 +15,7 @@
         showDownloadLinks = false;
     let fontFamilies = ["Arial", "serif", "cursive", "monospace"];
     let href;
+    export let json;
     let object = {
         color: "black",
         strokeWidth: 1,
@@ -33,7 +34,13 @@
         //     width: 0.875 * window.innerHeight,
         // });
         // canvas.setZoom(0.571);
+        if(json) {
+            canvas.loadFromJSON(json);
+        }
         activeObject = canvas;
+    });
+    onDestroy(() => {
+        json = canvas.toJSON();
     });
     function addRect() {
         let rect = new fabric.Rect({
@@ -95,8 +102,13 @@
         let svgData = canvas.toSVG();
         let blob = new Blob([svgData], { type: "image/svg+xml;charset=utf-8" });
         href = URL.createObjectURL(blob);
-        console.log(href);
         this.download = "canvas.svg";
+    }
+    function saveAsJSON() {
+        let json = canvas.toJSON();
+        let blob = new Blob([json],{type: "json"});
+        href = URL.createObjectURL(blob);
+        this.download = "canvas.json";
     }
     function changeBorderColor() {
         activeObject.set("stroke", object.color);
@@ -234,6 +246,7 @@
         <button on:click={changeCanvasColor}
             >Set this color as canvas background
         </button>
+        <a {href}download="file" on:click={saveAsJSON}>download as json</a>
     </div>
 </section>
 
