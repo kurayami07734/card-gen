@@ -40,7 +40,7 @@
         width: 100vw;
         height: 100vh;
         z-index: -1;
-        background-image: url("../assets/bg.webp");
+        background-image: url("/bg.webp");
         background-size: cover;
         filter: grayscale(1) brightness(0.4);
     }

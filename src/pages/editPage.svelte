@@ -28,6 +28,11 @@
             snapAngle: 0,
             fireRightClick: true,
         });
+        // canvas.setDimensions({
+        //     height: 0.5 * window.innerHeight,
+        //     width: 0.875 * window.innerHeight,
+        // });
+        // canvas.setZoom(0.571);
         activeObject = canvas;
     });
     function addRect() {
@@ -115,14 +120,6 @@
         reader.readAsDataURL(e.target.files[0]);
         showUploadButton = false;
     }
-    function deleteObject() {
-        if (activeObject == canvas) alert("No object is selected!");
-        else canvas.remove(activeObject);
-    }
-    function handleColorChange(e) {
-        object.color = `rgba(${e.detail.r},${e.detail.g},${e.detail.b},${e.detail.a})`;
-        if (activeObject) updateObject();
-    }
 </script>
 
 <section>
@@ -186,10 +183,14 @@
         on:click={updateSelection}
         on:keypress={updateSelection}
     >
-        <canvas id="canvas" width="1050" height="600" />
+        <canvas id="canvas" height="600" width="1050" />
     </div>
     <div class="props-pane">
-        <button class="delete" on:click={deleteObject}>Delete object </button>
+        <button
+            class="delete"
+            on:click={() => canvas.remove(canvas.getActiveObject())}
+            >Delete object
+        </button>
         {#if activeObject && activeObject.type === "textbox"}
             <div class="font-size-picker">
                 <label for="number">Font Size</label>
@@ -221,7 +222,12 @@
                 on:change={updateObject}
             />
         </div>
-        <HsvPicker on:colorChange={handleColorChange} />
+        <HsvPicker
+            on:colorChange={(e) => {
+                object.color = `rgba(${e.detail.r},${e.detail.g},${e.detail.b},${e.detail.a})`;
+                if (activeObject) updateObject();
+            }}
+        />
         <button on:click={changeBorderColor}
             >Set this color as border color
         </button>
@@ -281,7 +287,7 @@
     }
     .props-pane {
         display: flex;
-        height: 90vh;
+        /* height: 90vh; */
         justify-content: center;
         gap: 2rem;
         flex-direction: column;
