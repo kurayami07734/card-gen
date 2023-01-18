@@ -24,6 +24,7 @@
     "dotenv": "^16.0.3",
     "fabric": "^5.3.0",
     "firebase": "^9.15.0",
-    "svelte-color-picker": "^1.0.7"
+    "svelte-color-picker": "^1.0.7",
+    "svelte-inline-svg": "^1.2.0"
   }
 }

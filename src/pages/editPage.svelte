@@ -1,8 +1,10 @@
 <script lang="ts">
+    //@ts-nocheck
     import { onMount, onDestroy } from "svelte";
     import { fabric } from "fabric";
     import { HsvPicker } from "svelte-color-picker";
     import Icon from "fa-svelte";
+    import { saveToCloud } from "../firebase";
     import {
         faSquare,
         faCircle,
@@ -16,6 +18,7 @@
     let fontFamilies = ["Arial", "serif", "cursive", "monospace"];
     let href;
     export let json;
+    export let user;
     let object = {
         color: "black",
         strokeWidth: 1,
@@ -29,18 +32,14 @@
             snapAngle: 0,
             fireRightClick: true,
         });
-        // canvas.setDimensions({
-        //     height: 0.5 * window.innerHeight,
-        //     width: 0.875 * window.innerHeight,
-        // });
-        // canvas.setZoom(0.571);
-        if(json) {
+        if (json) {
             canvas.loadFromJSON(json);
         }
         activeObject = canvas;
     });
     onDestroy(() => {
-        json = canvas.toJSON();
+        json = JSON.stringify(canvas.toJSON());
+        console.log(json);
     });
     function addRect() {
         let rect = new fabric.Rect({
@@ -86,7 +85,6 @@
         activeObject.set("fontFamily", object.fontFamily);
         activeObject.set("strokeWidth", object.strokeWidth);
         activeObject.set("stroke", object.stroke);
-        console.log(activeObject);
         activeObject.set("fill", object.color);
         canvas.renderAll();
     }
@@ -104,12 +102,10 @@
         href = URL.createObjectURL(blob);
         this.download = "canvas.svg";
     }
-    function saveAsJSON() {
-        let json = canvas.toJSON();
-        let blob = new Blob([json],{type: "json"});
-        href = URL.createObjectURL(blob);
-        this.download = "canvas.json";
+    function handleCloudSave() {
+        saveToCloud(user.uid, JSON.stringify(canvas.toJSON()), canvas.toSVG());
     }
+
     function changeBorderColor() {
         activeObject.set("stroke", object.color);
         canvas.renderAll();
@@ -201,7 +197,8 @@
         <button
             class="delete"
             on:click={() => canvas.remove(canvas.getActiveObject())}
-            >Delete object
+        >
+            Delete object
         </button>
         {#if activeObject && activeObject.type === "textbox"}
             <div class="font-size-picker">
@@ -240,13 +237,13 @@
                 if (activeObject) updateObject();
             }}
         />
-        <button on:click={changeBorderColor}
-            >Set this color as border color
+        <button on:click={changeBorderColor}>
+            Set this color as border color
         </button>
-        <button on:click={changeCanvasColor}
-            >Set this color as canvas background
+        <button on:click={changeCanvasColor}>
+            Set this color as canvas background
         </button>
-        <a {href}download="file" on:click={saveAsJSON}>download as json</a>
+        <button on:click={handleCloudSave}>save to cloud</button>
     </div>
 </section>
 
@@ -300,7 +297,6 @@
     }
     .props-pane {
         display: flex;
-        /* height: 90vh; */
         justify-content: center;
         gap: 2rem;
         flex-direction: column;

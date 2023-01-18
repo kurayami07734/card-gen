@@ -1,23 +1,46 @@
 <script lang="ts">
     async function loginGoogle() {
-        let { signInWithPopup } = await import("firebase/auth");
-        let { auth, googleProvider } = await import("../firebase");
+        const { signInWithPopup } = await import("firebase/auth");
+        const { auth, googleProvider } = await import("../firebase");
         signInWithPopup(auth, googleProvider)
-            .then((res) => (user = res.user))
+            .then((res) => {
+                user = res.user;
+                getDesigns();
+            })
             .catch((err) => alert(err.detail));
     }
     async function loginFacebook() {
-        let { signInWithPopup } = await import("firebase/auth");
-        let { auth, facebookProvider } = await import("../firebase");
+        const { signInWithPopup } = await import("firebase/auth");
+        const { auth, facebookProvider } = await import("../firebase");
         signInWithPopup(auth, facebookProvider)
-            .then((res) => (user = res.user))
+            .then((res) => {
+                user = res.user;
+                getDesigns();
+            })
             .catch((err) => alert(err.detail));
     }
     async function logout() {
-        let { auth } = await import("../firebase");
+        const { auth } = await import("../firebase");
         auth.signOut();
+        designs = [];
         user = null;
     }
+    async function getDesigns() {
+        const { collection, query, where, getDocs } = await import(
+            "firebase/firestore"
+        );
+        const { db } = await import("../firebase");
+        const q = query(
+            collection(db, "designs"),
+            where("user_id", "==", user.uid)
+        );
+        const querySnapshot = await getDocs(q);
+        querySnapshot.forEach((doc) =>
+            designs.push({ id: doc.id, data: doc.data() })
+        );
+        console.log(designs);
+    }
+    let designs = [];
     export let user;
 </script>
 
@@ -25,6 +48,11 @@
     <div class="login-box">
         {#if user}
             <p>{user.displayName}</p>
+            {#if designs.length > 0}
+                {#each designs as design}
+                    <p>{design}</p>
+                {/each}
+            {/if}
             <button id="logout" on:click={logout}>Logout</button>
         {:else}
             <h1>Login</h1>

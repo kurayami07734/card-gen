@@ -22,7 +22,7 @@
   {:else if selectedTab === "Search"}
     <SearchPage on:go-edit={() => (selectedTab = "Edit")} />
   {:else if selectedTab === "Edit"}
-    <EditPage bind:json />
+    <EditPage bind:json bind:user/>
   {/if}
 </main>
 
