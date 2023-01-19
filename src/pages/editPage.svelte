@@ -11,14 +11,17 @@
         faDownload,
         faUpload,
     } from "@fortawesome/free-solid-svg-icons";
+    import { userStore } from "../store";
     let canvas,
         activeObject,
         showUploadButton = false,
-        showDownloadLinks = false;
-    let fontFamilies = ["Arial", "serif", "cursive", "monospace"];
-    let href;
+        showDownloadLinks = false,
+        fontFamilies = ["Arial", "serif", "cursive", "monospace"],
+        href,
+        user;
     export let json;
-    export let user;
+
+    userStore.subscribe((usr) => (user = usr));
     let object = {
         color: "black",
         strokeWidth: 1,
@@ -243,7 +246,7 @@
         <button on:click={changeCanvasColor}>
             Set this color as canvas background
         </button>
-        <button on:click={handleCloudSave}>save to cloud</button>
+        <button on:click={handleCloudSave}>Upload to cloud</button>
     </div>
 </section>
 

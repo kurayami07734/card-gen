@@ -1,58 +1,76 @@
 <script lang="ts">
-    async function loginGoogle() {
-        const { signInWithPopup } = await import("firebase/auth");
-        const { auth, googleProvider } = await import("../firebase");
+    import { userStore, designStore } from "../store";
+    import { signInWithPopup } from "firebase/auth";
+    import { collection, query, where, getDocs } from "firebase/firestore";
+    import { auth, db, googleProvider, facebookProvider } from "../firebase";
+    function loginGoogle() {
+        // let { signInWithPopup } = await import("firebase/auth");
+        // let { auth, googleProvider } = await import("../firebase");
+        // let designs = [];
         signInWithPopup(auth, googleProvider)
             .then((res) => {
-                user = res.user;
-                getDesigns();
+                userStore.set(res.user);
+                designStore.set(getDesigns());
             })
             .catch((err) => alert(err.detail));
     }
-    async function loginFacebook() {
-        const { signInWithPopup } = await import("firebase/auth");
-        const { auth, facebookProvider } = await import("../firebase");
-        signInWithPopup(auth, facebookProvider)
-            .then((res) => {
-                user = res.user;
-                getDesigns();
-            })
-            .catch((err) => alert(err.detail));
-    }
-    async function logout() {
-        const { auth } = await import("../firebase");
-        auth.signOut();
-        designs = [];
-        user = null;
-    }
-    async function getDesigns() {
-        const { collection, query, where, getDocs } = await import(
-            "firebase/firestore"
-        );
-        const { db } = await import("../firebase");
+    function getDesigns() {
+        // let { collection, query, where, getDocs } = await import(
+        //     "firebase/firestore"
+        // );
+        // let { db } = await import("../firebase");
         const q = query(
             collection(db, "designs"),
             where("user_id", "==", user.uid)
         );
-        const querySnapshot = await getDocs(q);
-        querySnapshot.forEach((doc) =>
-            designs.push({ id: doc.id, data: doc.data() })
-        );
-        console.log(designs);
+        let designs = [];
+        getDocs(q)
+            .then((res) =>
+                res.forEach((doc) => {
+                    designs.push({ id: doc.id, data: doc.data() });
+                })
+            )
+            .catch((err) => alert(`Failed to fetch designs: ${err.detail}`));
+        return designs;
     }
-    let designs = [];
-    export let user;
+    function loginFacebook() {
+        // let { signInWithPopup } = await import("firebase/auth");
+        // let { auth, facebookProvider } = await import("../firebase");
+        signInWithPopup(auth, facebookProvider)
+            .then((res) => {
+                userStore.set(res.user);
+                designStore.set(getDesigns());
+            })
+            .catch((err) => alert(err.detail));
+    }
+    function logout() {
+        // let { auth } = await import("../firebase");
+        auth.signOut()
+            .then(() => {
+                designStore.set([]);
+                userStore.set({});
+            })
+            .catch((err) => alert(`Failed to logout: ${err}`));
+    }
+
+    let user,
+        designs = [];
+    userStore.subscribe((usr) => (user = usr));
+    designStore.subscribe((res) => (designs = res));
 </script>
 
 <section>
     <div class="login-box">
-        {#if user}
-            <p>{user.displayName}</p>
-            {#if designs.length > 0}
-                {#each designs as design}
-                    <p>{design}</p>
+        {#if Object.keys(user).length !== 0}
+            <h2>{user.displayName}</h2>
+            <div class="preview">
+                {#each designs as des}
+                    <img
+                        src="data:image/svg+xml,{des.data.svg}"
+                        alt="preview of design"
+                    />
                 {/each}
-            {/if}
+            </div>
             <button id="logout" on:click={logout}>Logout</button>
         {:else}
             <h1>Login</h1>
@@ -80,6 +98,16 @@
     }
     h1 {
         font-size: 2.3rem;
+    }
+    .preview {
+        display: flex;
+        gap: 1rem;
+        margin: 0.5rem;
+    }
+    .preview img {
+        height: 25vh;
+        width: 43.75vh;
+        border: greenyellow solid 2px;
     }
     #facebook-btn {
         background-color: #1877f2;
