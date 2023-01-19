@@ -1,8 +1,14 @@
 <script lang="ts">
     import { userStore, designStore } from "../store";
     import { signInWithPopup } from "firebase/auth";
-    import { collection, query, where, getDocs } from "firebase/firestore";
-    import { auth, db, googleProvider, facebookProvider } from "../firebase";
+    import {
+        auth,
+        googleProvider,
+        facebookProvider,
+        getDesigns,
+    } from "../firebase";
+    import { createEventDispatcher } from "svelte";
+    const dispatch = createEventDispatcher();
     function loginGoogle() {
         // let { signInWithPopup } = await import("firebase/auth");
         // let { auth, googleProvider } = await import("../firebase");
@@ -10,36 +16,18 @@
         signInWithPopup(auth, googleProvider)
             .then((res) => {
                 userStore.set(res.user);
-                designStore.set(getDesigns());
+                getDesigns(res.user.uid);
             })
             .catch((err) => alert(err.detail));
     }
-    function getDesigns() {
-        // let { collection, query, where, getDocs } = await import(
-        //     "firebase/firestore"
-        // );
-        // let { db } = await import("../firebase");
-        const q = query(
-            collection(db, "designs"),
-            where("user_id", "==", user.uid)
-        );
-        let designs = [];
-        getDocs(q)
-            .then((res) =>
-                res.forEach((doc) => {
-                    designs.push({ id: doc.id, data: doc.data() });
-                })
-            )
-            .catch((err) => alert(`Failed to fetch designs: ${err.detail}`));
-        return designs;
-    }
+
     function loginFacebook() {
         // let { signInWithPopup } = await import("firebase/auth");
         // let { auth, facebookProvider } = await import("../firebase");
         signInWithPopup(auth, facebookProvider)
             .then((res) => {
                 userStore.set(res.user);
-                designStore.set(getDesigns());
+                getDesigns(res.user.uid);
             })
             .catch((err) => alert(err.detail));
     }
@@ -68,6 +56,8 @@
                     <img
                         src="data:image/svg+xml,{des.data.svg}"
                         alt="preview of design"
+                        on:click={() => dispatch("go-edit", des)}
+                        on:keypress={() => dispatch("go-edit", des)}
                     />
                 {/each}
             </div>
@@ -101,6 +91,7 @@
     }
     .preview {
         display: flex;
+        flex-wrap: wrap;
         gap: 1rem;
         margin: 0.5rem;
     }
@@ -108,6 +99,7 @@
         height: 25vh;
         width: 43.75vh;
         border: greenyellow solid 2px;
+        cursor: pointer;
     }
     #facebook-btn {
         background-color: #1877f2;

@@ -4,8 +4,8 @@
   import LoginPage from "./pages/loginPage.svelte";
   import EditPage from "./pages/editPage.svelte";
   import SearchPage from "./pages/searchPage.svelte";
-  let json;
   let selectedTab = "Home";
+  let canvasData;
 </script>
 
 <Topbar
@@ -18,11 +18,16 @@
   {#if selectedTab === "Home"}
     <HomePage on:go-search={() => (selectedTab = "Search")} />
   {:else if selectedTab === "Login"}
-    <LoginPage />
+    <LoginPage
+      on:go-edit={(e) => {
+        selectedTab = "Edit";
+        canvasData = e.detail;
+      }}
+    />
   {:else if selectedTab === "Search"}
     <SearchPage on:go-edit={() => (selectedTab = "Edit")} />
   {:else if selectedTab === "Edit"}
-    <EditPage bind:json />
+    <EditPage bind:canvasData />
   {/if}
 </main>
 

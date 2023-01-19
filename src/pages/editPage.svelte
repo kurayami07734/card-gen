@@ -4,7 +4,7 @@
     import { fabric } from "fabric";
     import { HsvPicker } from "svelte-color-picker";
     import Icon from "fa-svelte";
-    import { saveToCloud } from "../firebase";
+    import { saveToCloud, updateCloudDesign } from "../firebase";
     import {
         faSquare,
         faCircle,
@@ -19,8 +19,7 @@
         fontFamilies = ["Arial", "serif", "cursive", "monospace"],
         href,
         user;
-    export let json;
-
+    export let canvasData;
     userStore.subscribe((usr) => (user = usr));
     let object = {
         color: "black",
@@ -35,14 +34,18 @@
             snapAngle: 0,
             fireRightClick: true,
         });
-        if (json) {
-            canvas.loadFromJSON(json);
+        if (canvasData.data.json) {
+            canvas.loadFromJSON(canvasData.data.json);
         }
         activeObject = canvas;
     });
     onDestroy(() => {
-        json = JSON.stringify(canvas.toJSON());
-        console.log(json);
+        updateCloudDesign(
+            user.uid,
+            canvasData.id,
+            JSON.stringify(canvas.toJSON()),
+            canvas.toSVG()
+        );
     });
     function addRect() {
         let rect = new fabric.Rect({
@@ -106,7 +109,19 @@
         this.download = "canvas.svg";
     }
     function handleCloudSave() {
-        saveToCloud(user.uid, JSON.stringify(canvas.toJSON()), canvas.toSVG());
+        if (canvasData.id)
+            updateCloudDesign(
+                user.uid,
+                canvasData.id,
+                JSON.stringify(canvas.toJSON()),
+                canvas.toSVG()
+            );
+        else
+            saveToCloud(
+                user.uid,
+                JSON.stringify(canvas.toJSON()),
+                canvas.toSVG()
+            );
     }
 
     function changeBorderColor() {
