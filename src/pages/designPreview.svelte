@@ -10,10 +10,10 @@
 {:then designs}
     <div class="designs">
         {#each designs as des}
-            <!-- {#if !des.deleted} -->
+            {#if !des.deleted}
                 <div class="preview">
                     <img
-                        src="data:image/svg+xml,{des.data.svg}"
+                        src="data:image/svg+xml,{des.svg}"
                         alt="preview of design"
                         on:click={() => dispatch("go-edit", des)}
                         on:keypress={() => dispatch("go-edit", des)}
@@ -21,7 +21,7 @@
                     <div class="controls">
                         <button
                             on:click={() =>
-                                saveToTemplates(des.data.json, des.data.svg)}
+                                saveToTemplates(des.json, des.svg)}
                         >
                             make template
                         </button>
@@ -30,7 +30,7 @@
                         </button>
                     </div>
                 </div>
-            <!-- {/if} -->
+            {/if}
         {/each}
     </div>
 {:catch err}

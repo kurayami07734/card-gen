@@ -32,8 +32,8 @@
             snapAngle: 0,
             fireRightClick: true,
         });
-        if (canvasData.data.json) {
-            canvas.loadFromJSON(canvasData.data.json);
+        if (canvasData.json) {
+            canvas.loadFromJSON(canvasData.json);
         }
         activeObject = canvas;
     });

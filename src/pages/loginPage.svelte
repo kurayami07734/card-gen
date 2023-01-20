@@ -7,7 +7,7 @@
         facebookProvider,
         getDesigns,
     } from "../firebase";
-
+    import { createEventDispatcher } from "svelte";
     import DesignPreview from "./designPreview.svelte";
     function loginGoogle() {
         signInWithPopup(auth, googleProvider)
@@ -29,13 +29,17 @@
             .then(() => ($user = null))
             .catch((err) => alert(`Failed to logout: ${err}`));
     }
+    const dispatch = createEventDispatcher();
 </script>
 
 <section>
     <div class="login-box">
         {#if $user}
             <h2>{$user.displayName}</h2>
-            <DesignPreview designPromise={getDesigns($user.uid)} />
+            <DesignPreview
+                designPromise={getDesigns($user.uid)}
+                on:go-edit={(e) => dispatch("go-edit", e.detail)}
+            />
 
             <button id="logout" on:click={logout}>Logout</button>
         {:else}

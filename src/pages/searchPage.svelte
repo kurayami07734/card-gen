@@ -12,8 +12,10 @@
             <img
                 src="data:image/svg+xml,{temp.svg}"
                 alt="preview of design"
-                on:click={() => dispatch("go-edit", { data: temp })}
-                on:keypress={() => dispatch("go-edit", { data: temp })}
+                on:click={() =>
+                    dispatch("go-edit", { json: temp.json, svg: temp.svg })}
+                on:keypress={() =>
+                    dispatch("go-edit", { json: temp.json, svg: temp.svg })}
             />
         {/each}
     </div>
@@ -21,7 +23,9 @@
     <p>{error.detail}</p>
 {/await}
 <div class="cta">
-    <button on:click={() => dispatch("go-edit", { data: {} })}>Open blank design</button>
+    <button on:click={() => dispatch("go-edit", { json: {}, svg: {} })}
+        >Open blank design</button
+    >
 </div>
 
 <style>
