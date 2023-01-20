@@ -1,0 +1,60 @@
+<script>
+    import { createEventDispatcher } from "svelte";
+    import { saveToTemplates, markDeleted } from "../firebase";
+    export let designPromise;
+    const dispatch = createEventDispatcher();
+</script>
+
+{#await designPromise}
+    <p>Loading..</p>
+{:then designs}
+    <div class="designs">
+        {#each designs as des}
+            <!-- {#if !des.deleted} -->
+                <div class="preview">
+                    <img
+                        src="data:image/svg+xml,{des.data.svg}"
+                        alt="preview of design"
+                        on:click={() => dispatch("go-edit", des)}
+                        on:keypress={() => dispatch("go-edit", des)}
+                    />
+                    <div class="controls">
+                        <button
+                            on:click={() =>
+                                saveToTemplates(des.data.json, des.data.svg)}
+                        >
+                            make template
+                        </button>
+                        <button on:click={() => markDeleted(des.id)}>
+                            delete
+                        </button>
+                    </div>
+                </div>
+            <!-- {/if} -->
+        {/each}
+    </div>
+{:catch err}
+    <p>{err.detail}</p>
+{/await}
+
+<style>
+    .designs {
+        display: flex;
+        flex-wrap: wrap;
+        overflow: hidden;
+        gap: 1rem;
+        margin: 0.5rem;
+    }
+    .preview {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+        margin: 0.5rem;
+    }
+    .preview img {
+        height: 15vh;
+        width: 26.25vh;
+        border: greenyellow solid 2px;
+        cursor: pointer;
+    }
+</style>

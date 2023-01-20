@@ -6,37 +6,28 @@
         googleProvider,
         facebookProvider,
         getDesigns,
-        saveToTemplates,
-        markDeleted,
     } from "../firebase";
-    import { createEventDispatcher } from "svelte";
-    let designPromise;
-    const dispatch = createEventDispatcher();
+
+    import DesignPreview from "./designPreview.svelte";
     function loginGoogle() {
-        // let { signInWithPopup } = await import("firebase/auth");
-        // let { auth, googleProvider } = await import("../firebase");
-        // let designs = [];
         signInWithPopup(auth, googleProvider)
             .then((res) => {
                 $user = res.user;
-                designPromise = getDesigns($user.uid);
             })
             .catch((err) => alert(err.detail));
     }
 
     function loginFacebook() {
-        // let { signInWithPopup } = await import("firebase/auth");
-        // let { auth, facebookProvider } = await import("../firebase");
         signInWithPopup(auth, facebookProvider)
             .then((res) => {
                 $user = res.user;
-                designPromise = getDesigns($user.uid);
             })
             .catch((err) => alert(err.detail));
     }
     function logout() {
-        // let { auth } = await import("../firebase");
-        auth.signOut().catch((err) => alert(`Failed to logout: ${err}`));
+        auth.signOut()
+            .then(() => ($user = null))
+            .catch((err) => alert(`Failed to logout: ${err}`));
     }
 </script>
 
@@ -44,38 +35,7 @@
     <div class="login-box">
         {#if $user}
             <h2>{$user.displayName}</h2>
-            {#await designPromise then designs}
-                <div class="designs">
-                    {#each designs as des}
-                        {#if !des.deleted}
-                            <div class="preview">
-                                <img
-                                    src="data:image/svg+xml,{des.data.svg}"
-                                    alt="preview of design"
-                                    on:click={() => dispatch("go-edit", des)}
-                                    on:keypress={() => dispatch("go-edit", des)}
-                                />
-                                <div class="controls">
-                                    <button
-                                        on:click={() =>
-                                            saveToTemplates(
-                                                des.data.json,
-                                                des.data.svg
-                                            )}
-                                    >
-                                        make template
-                                    </button>
-                                    <button
-                                        on:click={() => markDeleted(des.id)}
-                                    >
-                                        delete
-                                    </button>
-                                </div>
-                            </div>
-                        {/if}
-                    {/each}
-                </div>
-            {/await}
+            <DesignPreview designPromise={getDesigns($user.uid)} />
 
             <button id="logout" on:click={logout}>Logout</button>
         {:else}
@@ -105,25 +65,7 @@
     h1 {
         font-size: 2.3rem;
     }
-    .designs {
-        display: flex;
-        flex-wrap: wrap;
-        overflow: hidden;
-        gap: 1rem;
-        margin: 0.5rem;
-    }
-    .preview {
-        display: flex;
-        flex-direction: column;
-        gap: 1rem;
-        margin: 0.5rem;
-    }
-    .preview img {
-        height: 15vh;
-        width: 26.25vh;
-        border: greenyellow solid 2px;
-        cursor: pointer;
-    }
+
     #facebook-btn {
         background-color: #1877f2;
         display: flex;

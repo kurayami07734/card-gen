@@ -41,7 +41,6 @@
         if ($user) {
             if ("id" in canvasData) {
                 updateCloudDesign(
-                    $user.uid,
                     canvasData.id,
                     JSON.stringify(canvas.toJSON()),
                     canvas.toSVG()
@@ -119,7 +118,6 @@
     function handleCloudSave() {
         if (canvasData.id)
             updateCloudDesign(
-                $user.uid,
                 canvasData.id,
                 JSON.stringify(canvas.toJSON()),
                 canvas.toSVG()
