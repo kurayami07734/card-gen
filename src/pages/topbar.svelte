@@ -19,13 +19,6 @@
     >
         <h4>Templates</h4>
     </div> 
-    <!-- <div
-        class="point"
-        on:click={() => dispatch("go-about")}
-        on:keypress={() => dispatch("go-about")}
-    >
-        <h4>About us</h4>
-    </div> -->
     <div
         class="point {selectedTab === "Login" ? "selected" : ""}"
         on:click={() => dispatch("go-login")}

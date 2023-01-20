@@ -11,16 +11,14 @@
         faDownload,
         faUpload,
     } from "@fortawesome/free-solid-svg-icons";
-    import { userStore } from "../store";
+    import { user } from "../store";
     let canvas,
         activeObject,
         showUploadButton = false,
         showDownloadLinks = false,
         fontFamilies = ["Arial", "serif", "cursive", "monospace"],
-        href,
-        user;
+        href;
     export let canvasData;
-    userStore.subscribe((usr) => (user = usr));
     let object = {
         color: "black",
         strokeWidth: 1,
@@ -40,12 +38,22 @@
         activeObject = canvas;
     });
     onDestroy(() => {
-        updateCloudDesign(
-            user.uid,
-            canvasData.id,
-            JSON.stringify(canvas.toJSON()),
-            canvas.toSVG()
-        );
+        if ($user) {
+            if ("id" in canvasData) {
+                updateCloudDesign(
+                    $user.uid,
+                    canvasData.id,
+                    JSON.stringify(canvas.toJSON()),
+                    canvas.toSVG()
+                );
+            } else {
+                saveToCloud(
+                    $user.uid,
+                    JSON.stringify(canvas.toJSON()),
+                    canvas.toSVG()
+                );
+            }
+        }
     });
     function addRect() {
         let rect = new fabric.Rect({
@@ -111,14 +119,14 @@
     function handleCloudSave() {
         if (canvasData.id)
             updateCloudDesign(
-                user.uid,
+                $user.uid,
                 canvasData.id,
                 JSON.stringify(canvas.toJSON()),
                 canvas.toSVG()
             );
         else
             saveToCloud(
-                user.uid,
+                $user.uid,
                 JSON.stringify(canvas.toJSON()),
                 canvas.toSVG()
             );
@@ -212,10 +220,7 @@
         <canvas id="canvas" height="600" width="1050" />
     </div>
     <div class="props-pane">
-        <button
-            class="delete"
-            on:click={() => canvas.remove(canvas.getActiveObject())}
-        >
+        <button class="delete" on:click={() => canvas.remove(activeObject)}>
             Delete object
         </button>
         {#if activeObject && activeObject.type === "textbox"}
@@ -261,7 +266,9 @@
         <button on:click={changeCanvasColor}>
             Set this color as canvas background
         </button>
-        <button on:click={handleCloudSave}>Upload to cloud</button>
+        {#if $user}
+            <button on:click={handleCloudSave}>Upload to cloud</button>
+        {/if}
     </div>
 </section>
 

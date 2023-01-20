@@ -1,4 +1,5 @@
+import type { UserCredential } from "firebase/auth";
 import { writable } from "svelte/store";
 
-export const userStore = writable({});
-export const designStore = writable([]);
+export const user = writable<UserCredential["user"]>();
+export default user;

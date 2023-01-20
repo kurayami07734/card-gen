@@ -25,7 +25,12 @@
       }}
     />
   {:else if selectedTab === "Search"}
-    <SearchPage on:go-edit={() => (selectedTab = "Edit")} />
+    <SearchPage
+      on:go-edit={(e) => {
+        selectedTab = "Edit";
+        canvasData = e.detail;
+      }}
+    />
   {:else if selectedTab === "Edit"}
     <EditPage bind:canvasData />
   {/if}
