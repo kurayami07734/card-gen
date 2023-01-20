@@ -30,17 +30,20 @@
             .catch((err) => alert(`Failed to logout: ${err}`));
     }
     const dispatch = createEventDispatcher();
+    let updateList = false;
 </script>
 
 <section>
     <div class="login-box">
         {#if $user}
             <h2>{$user.displayName}</h2>
-            <DesignPreview
-                designPromise={getDesigns($user.uid)}
-                on:go-edit={(e) => dispatch("go-edit", e.detail)}
-            />
-
+            {#key updateList}
+                <DesignPreview
+                    designPromise={getDesigns($user.uid)}
+                    on:go-edit={(e) => dispatch("go-edit", e.detail)}
+                    on:delete-design={() => (updateList = !updateList)}
+                />
+            {/key}
             <button id="logout" on:click={logout}>Logout</button>
         {:else}
             <h1>Login</h1>

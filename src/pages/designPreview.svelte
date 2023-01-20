@@ -20,12 +20,16 @@
                     />
                     <div class="controls">
                         <button
-                            on:click={() =>
-                                saveToTemplates(des.json, des.svg)}
+                            on:click={() => saveToTemplates(des.json, des.svg)}
                         >
                             make template
                         </button>
-                        <button on:click={() => markDeleted(des.id)}>
+                        <button
+                            on:click={() => {
+                                markDeleted(des.id);
+                                dispatch("delete-design");
+                            }}
+                        >
                             delete
                         </button>
                     </div>
