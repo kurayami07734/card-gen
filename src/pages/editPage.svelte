@@ -32,10 +32,18 @@
             snapAngle: 0,
             fireRightClick: true,
         });
+        canvas.setDimensions({
+            height: 0.6 * window.innerHeight,
+            width: 1.05 * window.innerHeight,
+        });
+        canvas.setZoom(0.571);
         if (canvasData.json) {
             canvas.loadFromJSON(canvasData.json);
         }
-        activeObject = canvas;
+        canvas.on({
+            "selection:update": updateSelection,
+            "selection:created": updateSelection,
+        });
     });
     onDestroy(() => {
         if ($user) {
@@ -86,8 +94,7 @@
         canvas.setBackgroundColor(object.color, canvas.renderAll.bind(canvas));
     }
     function updateSelection() {
-        activeObject = canvas;
-        if (canvas.getActiveObject()) activeObject = canvas.getActiveObject();
+        activeObject = canvas.getActiveObject();
     }
     function addLine() {
         let line = new fabric.Line([50, 50, 1000, 50], { stroke: "orange" });
@@ -102,11 +109,17 @@
         canvas.renderAll();
     }
     function saveAsPNG() {
-        href = canvas.toDataURL({ format: "png" });
+        href = canvas.toDataURL({
+            format: "png",
+            multiplier: 1050 / window.innerWidth,
+        });
         this.download = "canvas.png";
     }
     function saveAsJPG() {
-        href = canvas.toDataURL({ format: "jpeg" });
+        href = canvas.toDataURL({
+            format: "jpeg",
+            multiplier: 1050 / window.innerWidth,
+        });
         this.download = "canvas.jpg";
     }
     function saveAsSVG() {
@@ -215,10 +228,18 @@
         on:click={updateSelection}
         on:keypress={updateSelection}
     >
-        <canvas id="canvas" height="600" width="1050" />
+        <canvas id="canvas" />
     </div>
     <div class="props-pane">
-        <button class="delete" on:click={() => canvas.remove(activeObject)}>
+        <!-- {@debug activeObject} -->
+        <button
+            class="delete"
+            on:click={() => {
+                canvas.remove(canvas.getActiveObject());
+                // canvas.remove(activeObject);
+                // canvas.renderAll();
+            }}
+        >
             Delete object
         </button>
         {#if activeObject && activeObject.type === "textbox"}
@@ -321,7 +342,7 @@
     .props-pane {
         display: flex;
         justify-content: center;
-        gap: 2rem;
+        gap: 1rem;
         flex-direction: column;
         align-items: center;
         font-size: 1.1rem;
