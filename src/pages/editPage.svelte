@@ -10,6 +10,7 @@
         faCircle,
         faDownload,
         faUpload,
+        faArrowsUpToLine
     } from "@fortawesome/free-solid-svg-icons";
     import { user } from "../store";
     let canvas,
@@ -142,6 +143,9 @@
                 canvas.toSVG()
             );
     }
+    function bringToFront() {
+        canvas.bringToFront(activeObject);
+    }
 
     function changeBorderColor() {
         activeObject.set("stroke", object.color);
@@ -169,6 +173,10 @@
 
 <section>
     <div class="toolbar">
+        <div class="bring-to-front" on:click={bringToFront} on:keypress={bringToFront}>
+            <Icon icon={faArrowsUpToLine} class="icon" />
+            Bring to front
+        </div>
         <div class="text" on:click={addText} on:keypress={addText}>
             <div class="icon">T</div>
             Text
@@ -231,13 +239,10 @@
         <canvas id="canvas" />
     </div>
     <div class="props-pane">
-        <!-- {@debug activeObject} -->
         <button
             class="delete"
             on:click={() => {
                 canvas.remove(canvas.getActiveObject());
-                // canvas.remove(activeObject);
-                // canvas.renderAll();
             }}
         >
             Delete object
@@ -307,9 +312,9 @@
         display: flex;
         flex-direction: row;
         width: 80vw;
-        gap: 2rem;
+        gap: 1rem;
         top: 10vh;
-        left: 25vw;
+        left: 15vw;
     }
     .delete {
         background-color: red;
@@ -322,16 +327,16 @@
         flex-direction: column;
         justify-content: space-around;
         align-items: center;
-        height: 8vh;
+        height: 10vh;
     }
     span.text {
-        transform: translateY(-12px);
+        transform: translateY(-25px);
     }
     .line {
         position: relative;
         height: 2px;
-        border-top: 2px solid white;
-        top: 15px;
+        border-top: 2.3px solid white;
+        top: 30px;
     }
 
     div :global(.icon) {
