@@ -41,7 +41,7 @@
                 <DesignPreview
                     designPromise={getDesigns($user.uid)}
                     on:go-edit={(e) => dispatch("go-edit", e.detail)}
-                    on:delete-design={() => (updateList = !updateList)}
+                    on:re-render={() => (updateList = !updateList)}
                 />
             {/key}
             <button id="logout" on:click={logout}>Logout</button>

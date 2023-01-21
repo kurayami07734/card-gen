@@ -10,7 +10,7 @@
 {:then designs}
     <div class="designs">
         {#each designs as des}
-            {#if !des.deleted}
+            {#if des.deleted === false}
                 <div class="preview">
                     <img
                         src="data:image/svg+xml,{des.svg}"
@@ -19,15 +19,20 @@
                         on:keypress={() => dispatch("go-edit", des)}
                     />
                     <div class="controls">
-                        <button
-                            on:click={() => saveToTemplates(des.json, des.svg)}
-                        >
-                            make template
-                        </button>
+                        {#if des.isTemplate === false}
+                            <button
+                                on:click={() => {
+                                    saveToTemplates(des.id, des.json, des.svg);
+                                    dispatch("re-render");
+                                }}
+                            >
+                                make template
+                            </button>
+                        {/if}
                         <button
                             on:click={() => {
                                 markDeleted(des.id);
-                                dispatch("delete-design");
+                                dispatch("re-render");
                             }}
                         >
                             delete

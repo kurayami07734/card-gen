@@ -50,6 +50,7 @@
     onDestroy(() => {
         if ($user) {
             if ("id" in canvasData) {
+                console.log(canvasData.id);
                 updateCloudDesign(
                     canvasData.id,
                     JSON.stringify(canvas.toJSON()),

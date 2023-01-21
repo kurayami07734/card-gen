@@ -19,19 +19,19 @@ export const db = getFirestore();
 const designs = collection(db, "designs");
 const templates = collection(db, "templates");
 export const facebookProvider = new FacebookAuthProvider();
-export function saveToCloud(user_id: string, json: string, svg: string): void {
+export function saveToCloud(user_id: string, json: string, svg: string) {
     addDoc(designs, {
         user_id: user_id,
         json: json,
         svg: svg,
         deleted: false,
-    }).catch(err => alert(err));
-    getDesigns(user_id);
+        isTemplate: false,
+    });
 }
-export function updateCloudDesign(doc_id: string, json: string, svg: string): void {
+export function updateCloudDesign(doc_id: string, json: string, svg: string) {
     const docRef = doc(db, "designs", doc_id);
-    setDoc(docRef, { json: json, svg: svg, deleted: false }, { merge: true })
-        .catch(err => console.log(`${err.detail}`));
+    setDoc(docRef, { json: json, svg: svg, deleted: false, isTemplate: false }, { merge: true })
+        .catch(e => alert(e.toString()));
 }
 
 export async function getDesigns(user_id: string): Promise<any[]> {
@@ -47,17 +47,21 @@ export async function getDesigns(user_id: string): Promise<any[]> {
                 id: doc.id,
                 json: doc.data().json,
                 svg: doc.data().svg,
-                deleted: doc.data().deleted
+                deleted: doc.data().deleted,
+                isTemplate: doc.data().isTemplate,
             }
         )
     );
     return designs;
 }
-export function saveToTemplates(json: string, svg: string): void {
+export function saveToTemplates(doc_id: string, json: string, svg: string) {
     addDoc(templates, {
         json: json,
         svg: svg,
-    }).catch(err => alert(err));
+    }).then(() => {
+        const docRef = doc(db, "designs", doc_id);
+        setDoc(docRef, { isTemplate: true }, { merge: true });
+    }).catch(e => alert(e.toString()));
 }
 export async function getTemplates(): Promise<any[]> {
     let temps = [];
