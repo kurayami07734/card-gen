@@ -29,7 +29,7 @@
     };
     onMount(() => {
         canvas = new fabric.Canvas("canvas", {
-            backgroundColor: "white",
+            backgroundColor: "#FFFFFF",
             snapAngle: 0,
             fireRightClick: true,
         });
@@ -39,6 +39,7 @@
         });
         canvas.setZoom(0.571);
         if (canvasData.json) {
+            console.log(canvasData);
             canvas.loadFromJSON(canvasData.json);
         }
         canvas.on({

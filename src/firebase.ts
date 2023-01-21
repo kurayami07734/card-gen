@@ -65,6 +65,7 @@ export async function getTemplates(): Promise<any[]> {
     querySnapshot.forEach(
         doc => temps.push(
             {
+                id: doc.id,
                 json: doc.data().json,
                 svg: doc.data().svg
             }
