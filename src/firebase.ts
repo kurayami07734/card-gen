@@ -1,7 +1,7 @@
 import { initializeApp } from "firebase/app";
 import { user } from "./store";
 import { getAuth, GoogleAuthProvider, FacebookAuthProvider, signInWithPopup } from "firebase/auth";
-import { getFirestore, addDoc, collection, query, where, getDocs, setDoc, doc } from "firebase/firestore";
+import { getFirestore, addDoc, collection, query, where, getDocs, setDoc, doc } from "firebase/firestore/lite";
 const secrets = import.meta.env;
 
 const firebaseConfig = {
