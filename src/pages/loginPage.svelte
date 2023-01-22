@@ -1,34 +1,13 @@
 <script lang="ts">
     import { user } from "../store";
-    import { signInWithPopup } from "firebase/auth";
     import {
-        auth,
-        googleProvider,
-        facebookProvider,
+        loginFacebook,
+        loginGoogle,
+        logout,
         getDesigns,
     } from "../firebase";
     import { createEventDispatcher } from "svelte";
     import DesignPreview from "./designPreview.svelte";
-    function loginGoogle() {
-        signInWithPopup(auth, googleProvider)
-            .then((res) => {
-                $user = res.user;
-            })
-            .catch((err) => alert(err.detail));
-    }
-
-    function loginFacebook() {
-        signInWithPopup(auth, facebookProvider)
-            .then((res) => {
-                $user = res.user;
-            })
-            .catch((err) => alert(err.detail));
-    }
-    function logout() {
-        auth.signOut()
-            .then(() => ($user = null))
-            .catch((err) => alert(`Failed to logout: ${err}`));
-    }
     const dispatch = createEventDispatcher();
     let updateList = false;
 </script>

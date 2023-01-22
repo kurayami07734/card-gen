@@ -1,5 +1,6 @@
 import { initializeApp } from "firebase/app";
-import { getAuth, GoogleAuthProvider, FacebookAuthProvider } from "firebase/auth";
+import { user } from "./store";
+import { getAuth, GoogleAuthProvider, FacebookAuthProvider, signInWithPopup } from "firebase/auth";
 import { getFirestore, addDoc, collection, query, where, getDocs, setDoc, doc } from "firebase/firestore";
 const secrets = import.meta.env;
 const firebaseConfig = {
@@ -27,6 +28,27 @@ export function saveToCloud(user_id: string, json: string, svg: string) {
         deleted: false,
         isTemplate: false,
     });
+}
+export function loginGoogle() {
+
+    signInWithPopup(auth, googleProvider)
+        .then((res) => {
+            user.set(res.user);
+        })
+        .catch((err) => alert(err.toString()));
+}
+
+export function loginFacebook() {
+    signInWithPopup(auth, facebookProvider)
+        .then((res) => {
+            user.set(res.user);
+        })
+        .catch((err) => alert(err.toString()));
+}
+export function logout() {
+    auth.signOut()
+        .then(() => (user.set(null)))
+        .catch((err) => alert(`Failed to logout: ${err}`));
 }
 export function updateCloudDesign(doc_id: string, json: string, svg: string) {
     const docRef = doc(db, "designs", doc_id);
