@@ -3,6 +3,7 @@ import { user } from "./store";
 import { getAuth, GoogleAuthProvider, FacebookAuthProvider, signInWithPopup } from "firebase/auth";
 import { getFirestore, addDoc, collection, query, where, getDocs, setDoc, doc } from "firebase/firestore";
 const secrets = import.meta.env;
+
 const firebaseConfig = {
     apiKey: secrets.VITE_API_KEY,
     authDomain: secrets.VITE_AUTH_DOMAIN,
@@ -14,12 +15,12 @@ const firebaseConfig = {
 };
 
 const app = initializeApp(firebaseConfig);
-export const auth = getAuth(app);
-export const googleProvider = new GoogleAuthProvider();
-export const db = getFirestore();
+const auth = getAuth(app);
+const googleProvider = new GoogleAuthProvider();
+const db = getFirestore();
 const designs = collection(db, "designs");
 const templates = collection(db, "templates");
-export const facebookProvider = new FacebookAuthProvider();
+const facebookProvider = new FacebookAuthProvider();
 export function saveToCloud(user_id: string, json: string, svg: string) {
     addDoc(designs, {
         user_id: user_id,
@@ -27,10 +28,9 @@ export function saveToCloud(user_id: string, json: string, svg: string) {
         svg: svg,
         deleted: false,
         isTemplate: false,
-    });
+    }).catch(e => alert(e.toString()));
 }
 export function loginGoogle() {
-
     signInWithPopup(auth, googleProvider)
         .then((res) => {
             user.set(res.user);
@@ -48,7 +48,7 @@ export function loginFacebook() {
 export function logout() {
     auth.signOut()
         .then(() => (user.set(null)))
-        .catch((err) => alert(`Failed to logout: ${err}`));
+        .catch((err) => alert(`Failed to logout: ${err.toString()}`));
 }
 export function updateCloudDesign(doc_id: string, json: string, svg: string) {
     const docRef = doc(db, "designs", doc_id);
@@ -57,24 +57,28 @@ export function updateCloudDesign(doc_id: string, json: string, svg: string) {
 }
 
 export async function getDesigns(user_id: string): Promise<any[]> {
-    const q = query(
-        collection(db, "designs"),
-        where("user_id", "==", user_id)
-    );
-    let designs = [];
-    const querySnapshot = await getDocs(q);
-    querySnapshot.forEach(
-        doc => designs.push(
-            {
-                id: doc.id,
-                json: doc.data().json,
-                svg: doc.data().svg,
-                deleted: doc.data().deleted,
-                isTemplate: doc.data().isTemplate,
-            }
-        )
-    );
-    return designs;
+    try {
+        const q = query(
+            collection(db, "designs"),
+            where("user_id", "==", user_id)
+        );
+        let designs = [];
+        const querySnapshot = await getDocs(q);
+        querySnapshot.forEach(
+            doc => designs.push(
+                {
+                    id: doc.id,
+                    json: doc.data().json,
+                    svg: doc.data().svg,
+                    deleted: doc.data().deleted,
+                    isTemplate: doc.data().isTemplate,
+                }
+            )
+        );
+        return designs;
+    } catch (e) {
+        alert(e.toString());
+    }
 }
 export function saveToTemplates(doc_id: string, json: string, svg: string) {
     addDoc(templates, {
@@ -86,20 +90,29 @@ export function saveToTemplates(doc_id: string, json: string, svg: string) {
     }).catch(e => alert(e.toString()));
 }
 export async function getTemplates(): Promise<any[]> {
-    let temps = [];
-    const querySnapshot = await getDocs(templates);
-    querySnapshot.forEach(
-        doc => temps.push(
-            {
-                id: doc.id,
-                json: doc.data().json,
-                svg: doc.data().svg
-            }
-        )
-    );
-    return temps;
+    try {
+        let temps = [];
+        const querySnapshot = await getDocs(templates);
+        querySnapshot.forEach(
+            doc => temps.push(
+                {
+                    id: doc.id,
+                    json: doc.data().json,
+                    svg: doc.data().svg
+                }
+            )
+        );
+        return temps;
+    } catch (e) {
+        alert(e.toString());
+    }
 }
 export function markDeleted(doc_id: string): void {
-    const docRef = doc(db, "designs", doc_id);
-    setDoc(docRef, { deleted: true }, { merge: true });
+    try {
+        const docRef = doc(db, "designs", doc_id);
+        setDoc(docRef, { deleted: true }, { merge: true });
+    } catch (e) {
+        alert(e.toString());
+
+    }
 } 

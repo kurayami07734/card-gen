@@ -1,9 +1,6 @@
 <script lang="ts">
   import Topbar from "./pages/topbar.svelte";
   import HomePage from "./pages/homePage.svelte";
-  // import LoginPage from "./pages/loginPage.svelte";
-  // import EditPage from "./pages/editPage.svelte";
-  // import SearchPage from "./pages/searchPage.svelte";
   let loginPage, searchPage, editPage;
   let selectedTab = "Home";
   let canvasData;
@@ -15,6 +12,9 @@
   }
   function loadEditPage() {
     editPage = import("./pages/editPage.svelte");
+  }
+  function editListener(e: Event) {
+    
   }
 </script>
 

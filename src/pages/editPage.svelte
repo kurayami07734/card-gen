@@ -10,16 +10,16 @@
         faCircle,
         faDownload,
         faUpload,
-        faArrowsUpToLine
+        faArrowsUpToLine,
     } from "@fortawesome/free-solid-svg-icons";
     import { user } from "../store";
-    let canvas,
-        activeObject,
+    let canvas: fabric.Canvas,
+        activeObject: fabric.Object,
         showUploadButton = false,
         showDownloadLinks = false,
         fontFamilies = ["Arial", "serif", "cursive", "monospace"],
-        href;
-    export let canvasData;
+        href: string;
+    export let canvasData: object;
     let object = {
         color: "black",
         strokeWidth: 1,
@@ -153,9 +153,9 @@
         activeObject.set("stroke", object.color);
         canvas.renderAll();
     }
-    function uploadImage(e) {
+    function uploadImage(e: Event) {
         var reader = new FileReader();
-        reader.onload = function (e) {
+        reader.onload = function (e: Event) {
             var image = new Image();
             image.src = e.target.result;
             image.onload = function () {
@@ -171,11 +171,19 @@
         reader.readAsDataURL(e.target.files[0]);
         showUploadButton = false;
     }
+    function handleColorChange(e: Event) {
+        object.color = `rgba(${e.detail.r},${e.detail.g},${e.detail.b},${e.detail.a})`;
+        if (activeObject) updateObject();
+    }
 </script>
 
 <section>
     <div class="toolbar">
-        <div class="bring-to-front" on:click={bringToFront} on:keypress={bringToFront}>
+        <div
+            class="bring-to-front"
+            on:click={bringToFront}
+            on:keypress={bringToFront}
+        >
             <Icon icon={faArrowsUpToLine} class="icon" />
             Bring to front
         </div>
@@ -280,12 +288,7 @@
                 on:change={updateObject}
             />
         </div>
-        <HsvPicker
-            on:colorChange={(e) => {
-                object.color = `rgba(${e.detail.r},${e.detail.g},${e.detail.b},${e.detail.a})`;
-                if (activeObject) updateObject();
-            }}
-        />
+        <HsvPicker on:colorChange={handleColorChange} />
         <button on:click={changeBorderColor}>
             Set this color as border color
         </button>
