@@ -13,9 +13,6 @@
   function loadEditPage() {
     editPage = import("./pages/editPage.svelte");
   }
-  function editListener(e: Event) {
-    
-  }
 </script>
 
 <Topbar

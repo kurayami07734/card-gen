@@ -51,6 +51,7 @@
     }
     .cta > button {
         background-color: #0066ff;
+        color: white;
         padding: 1rem;
         font-size: 1.5rem;
         font-weight: 600;

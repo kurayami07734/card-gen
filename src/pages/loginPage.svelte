@@ -57,12 +57,14 @@
         display: flex;
         align-items: center;
         justify-content: space-around;
+        color: white;
     }
     #google-btn {
         display: flex;
         align-items: center;
         justify-content: space-around;
         background-color: #303030;
+        color: white;
     }
     #logout {
         background-color: red;
